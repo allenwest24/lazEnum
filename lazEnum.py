@@ -9,22 +9,28 @@ def parseArgs():
         print('So, there isn\'t really a help menu for this program because it\'s really not that complicated..\n    Usage: python ./lazEnum [ip/url]')
         exit()
 
-def ping(ip):
+def checkReachability():
     print('\nWelcome to lazEnum! Let\'s start with a ping check to see if this shit is even reachable first yeh?\n')
-    cmd = 'ping -w 3 ' + ip
+    cmd = 'ping -w 3 ' + sys.argv[1]
     x = os.system(cmd)
     if x == 512:
         print('Exiting because that IP is wack yo.')
         exit()
     elif x == 256:
         print('Is your refridgerator running? Because that IP is not. Server down!')
+        exit()
     else:
-        print('\nSick! The server at that IP is up and running. Let\'s do a port scan..\n')
+        print('\nSick! The server at that IP is up and running. Let\'s do a port scan. This part may take ages. Trust the system..\n')
+
+def scanForOpenPorts():
+    cmd = 'nmap -sV -sC -Pn -A ' + sys.argv[1]
+    x = os.system(cmd)
 
 def main():
     parseArgs()
-    ip = sys.argv[1]
-    r = ping(ip)
+    checkReachability()
+    scanForOpenPorts()
+
 
 if __name__ == "__main__":
     main()
