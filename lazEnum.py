@@ -23,13 +23,30 @@ def checkReachability():
         print('\nSick! The server at that IP is up and running. Let\'s do a port scan. This part may take ages. Trust the system..\n')
 
 def scanForOpenPorts():
-    cmd = 'nmap -sV -sC -Pn -A ' + sys.argv[1]
-    x = os.system(cmd)
+    cmd1 = 'nmap -sV -sC -Pn -A ' + sys.argv[1] + ' > lazEnumResultsForIP' + sys.argv[1] + '.txt'
+    x = os.system(cmd1)
+    cmd2 = 'cat lazEnumResultsForIP' + sys.argv[1] + '.txt'
+    y = os.system(cmd2)
+
+def assessPortScan():
+    portsFound = []
+    fn = 'lazEnumResultsForIP' + sys.argv[1] + '.txt'
+    f = open(fn, "r")
+    for line in f:
+        if line[0].isdigit():
+            tmp = ""
+            curr = 0
+            while line[curr].isdigit():
+                tmp += line[curr]
+                curr += 1
+            portsFound.append(tmp)
+    print(portsFound)
 
 def main():
     parseArgs()
     checkReachability()
     scanForOpenPorts()
+    assessPortScan()
 
 
 if __name__ == "__main__":
