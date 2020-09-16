@@ -28,6 +28,14 @@ def scanForOpenPorts():
     cmd2 = 'cat lazEnumResultsForIP' + sys.argv[1] + '.txt'
     y = os.system(cmd2)
 
+def dynamicallyEnumPorts(portsFound):
+    if 80 in portsFound:
+        print('\nSince port 80 is open, lets do a dictionary attack to see if any subdirectories are accessible!')
+        cmd = 'gobuster -u http://' + sys.argv[1] + ' -w ./directory-list-2.3-medium.txt -x php -t 20'
+        os.system(cmd)
+    if 22 in portsFound:
+        print('\nSSH is open on port 22 so be looking for usernames and passwords.')
+
 def assessPortScan():
     portsFound = []
     fn = 'lazEnumResultsForIP' + sys.argv[1] + '.txt'
@@ -39,8 +47,8 @@ def assessPortScan():
             while line[curr].isdigit():
                 tmp += line[curr]
                 curr += 1
-            portsFound.append(tmp)
-    print(portsFound)
+            portsFound.append(int(tmp))
+    dynamicallyEnumPorts(portsFound)
 
 def main():
     parseArgs()
@@ -48,7 +56,5 @@ def main():
     scanForOpenPorts()
     assessPortScan()
 
-
 if __name__ == "__main__":
     main()
-
