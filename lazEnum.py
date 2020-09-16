@@ -31,7 +31,7 @@ def scanForOpenPorts():
 def dynamicallyEnumPorts(portsFound):
     if 80 in portsFound:
         print('\nSince port 80 is open, lets do a dictionary attack to see if any subdirectories are accessible!')
-        cmd = 'gobuster -u http://' + sys.argv[1] + ' -w ./directory-list-2.3-medium.txt -x php -t 20'
+        cmd = 'gobuster -u http://' + sys.argv[1] + ' -w ./resources/directory-list-2.3-medium.txt -x php -t 20'
         os.system(cmd)
     if 22 in portsFound:
         print('\nSSH is open on port 22 so be looking for usernames and passwords.')
