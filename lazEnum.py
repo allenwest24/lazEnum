@@ -1,13 +1,23 @@
 import os
 import sys
 
-def parseArgs():
+def parseArgs(target):
     if len(sys.argv) != 2:
         print('Aight, what\'re you doin? Directions were very simple. Let\'s break it down Barney-style I guess..\n    Usage: python ./lazEnum [ip/url]')
         exit()
-    elif sys.argv[1] == "-h" or sys.argv[1] == "--help":
+    elif target == "-h" or target == "--help":
         print('So, there isn\'t really a help menu for this program because it\'s really not that complicated..\n    Usage: python ./lazEnum [ip/url]')
         exit()
+    elif not target.isdigit():
+        if target[0:5] == 'http:':
+            cmd = 'nslookup ' + target[7:]
+            os.system(cmd)
+        elif target[0:6] == 'https:':
+            cmd = 'nslookup ' + target[8:]
+            os.system(cmd)
+        else:
+            cmd = 'nslookup ' + target
+            os.system(cmd)
 
 def checkReachability():
     print('\nWelcome to lazEnum! Let\'s start with a ping check to see if this shit is even reachable first yeh?\n')
@@ -31,7 +41,7 @@ def scanForOpenPorts():
 def dynamicallyEnumPorts(portsFound):
     if 80 in portsFound:
         print('\nSince port 80 is open, lets do a dictionary attack to see if any subdirectories are accessible!')
-        cmd = 'gobuster -u http://' + sys.argv[1] + ' -w ./resources/directory-list-2.3-medium.txt -x php -t 20'
+        cmd = 'gobuster -u http://' + sys.argv[1] + ' -w ./resources/directory-list-2.3-medium.txt -x php -t 20 -o output.txt'
         os.system(cmd)
     if 22 in portsFound:
         print('\nSSH is open on port 22 so be looking for usernames and passwords.')
@@ -51,7 +61,8 @@ def assessPortScan():
     dynamicallyEnumPorts(portsFound)
 
 def main():
-    parseArgs()
+    target = sys.argv[1]
+    parseArgs(target)
     checkReachability()
     scanForOpenPorts()
     assessPortScan()
