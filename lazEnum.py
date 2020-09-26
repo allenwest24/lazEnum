@@ -1,8 +1,6 @@
 import os
 import sys
 
-buff = ''
-
 def parseArgs(target):
     if len(sys.argv) != 2:
         print('Aight, what\'re you doin? Directions were very simple. Let\'s break it down Barney-style I guess..\n    Usage: python ./lazEnum [ip/url]')
@@ -26,22 +24,23 @@ def parseArgs(target):
     else:
         return target
 
-def checkReachability(target):
+def checkReachability(target, buff):
     buff += 'Starting a test for ' + target + '\n'
     print('\nWelcome to lazEnum! Let\'s start with a ping check to see if this shit is even reachable first yeh?\n')
     cmd = 'ping -w 3 ' + target
     x = os.system(cmd)
     if x == 512:
         print('Exiting because that IP is wack yo.')
-        buff += 'Target unreachable\n'
+        buff += '\nTarget unreachable\n'
         exit()
     elif x == 256:
         print('Is your refridgerator running? Because that IP is not. Server down!')
-        buff += 'Target unreachable\n'
+        buff += '\nTarget unreachable\n'
         exit()
     else:
         print('\nSick! The server at that IP is up and running. Let\'s do a port scan. This part may take ages. Trust the system..\n')
-        buff += 'Target reachable'
+        buff += '\nTarget reachable'
+    return buff
 
 def scanForOpenPorts(target):
     cmd1 = 'nmap -sV -sC -Pn -A ' + target + ' > lazEnumResultsForIP' + target + '.txt'
@@ -49,7 +48,7 @@ def scanForOpenPorts(target):
     cmd2 = 'cat lazEnumResultsForIP' + target + '.txt'
     y = os.system(cmd2)
 
-def dynamicallyEnumPorts(portsFound, target):
+def dynamicallyEnumPorts(portsFound, target, buff):
     if 80 in portsFound:
         print('\nSince port 80 is open, lets do a dictionary attack to see if any subdirectories are accessible!')
         cmd = 'gobuster -u http://' + target + ' -w ./resources/directory-list-2.3-medium.txt -x php -t 20 -o output.txt'
@@ -57,14 +56,15 @@ def dynamicallyEnumPorts(portsFound, target):
     if 22 in portsFound:
         print('\nSSH is open on port 22 so be looking for usernames and passwords.')
 
-def addListToBuff(listOfItems):
+def addListToBuff(listOfItems, buff):
     buff += 'Found the following ports open:\n'
     tempBuff = ''
     for item in listOfItems:
         tempBuff += ' ' + str(item) + ','
-    buf += tempBuff[0:(len(tempBuff) - 1)]
+    buff += tempBuff[0:(len(tempBuff) - 1)]
+    return buff
 
-def assessPortScan(target):
+def assessPortScan(target, buff):
     portsFound = []
     fn = 'lazEnumResultsForIP' + target + '.txt'
     f = open(fn, "r")
@@ -76,18 +76,20 @@ def assessPortScan(target):
                 tmp += line[curr]
                 curr += 1
             portsFound.append(int(tmp))
-    addListToBuff(portsFound)
-    dynamicallyEnumPorts(portsFound, target)
+    buff = addListToBuff(portsFound, buff)
+    dynamicallyEnumPorts(portsFound, target, buff)
+    return buff
 
-def showResults():
+def showResults(buff):
     print(buff)
 
 def main():
+    buff = ''
     target = parseArgs(sys.argv[1])
-    checkReachability(target)
+    buff = checkReachability(target, buff)
     scanForOpenPorts(target)
-    assessPortScan(target)
-    showResults()
+    buff = assessPortScan(target, buff)
+    showResults(buff)
 
 if __name__ == "__main__":
     main()
