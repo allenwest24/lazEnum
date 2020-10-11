@@ -85,7 +85,11 @@ def showResults(buff):
 
 def main():
     buff = ''
-    target = parseArgs(sys.argv[1])
+    if len(sys.argv) == 2:
+        target = parseArgs(sys.argv[1])
+    else:
+        print('     Usage: python ./lazEnum.py [ip/url]')
+        exit()
     buff = checkReachability(target, buff)
     scanForOpenPorts(target)
     buff = assessPortScan(target, buff)
