@@ -6,7 +6,19 @@ scan to see what ports are open, then go into further enumeration tactics depend
 
 ### Logic Map
 
+This script is essentially the same first steps for every HackTheBox machine. I can run this script, then go make some food, and when I get back a large portion of my enumeration will be done for me. 
+
 $ python ./lazEnum.py [ip/url] 
+
+- Check if target is reachable
+- Run a detailed port scan
+- Parse the open ports
+- If there is a webserver:
+    - Run a directory brute force
+    - Analyze results
+- If there are other ports open, give specific advice.
+
+More features to follow. 
 
 ### Issues
 
