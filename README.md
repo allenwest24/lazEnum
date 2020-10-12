@@ -7,3 +7,8 @@ scan to see what ports are open, then go into further enumeration tactics depend
 ### Logic Map
 
 $ python ./lazEnum.py [ip/url] 
+
+### Issues
+
+This program uses gobuster. On the newest kali release, this tool sometimes doesn't get installed. you can fix thisby entering 'sudo apt-get install gobuster'.
+If this returns an error about not being able to find gobuster, visit https://ourcodeworld.com/articles/read/961/how-to-solve-kali-linux-apt-get-install-e-unable-to-locate-package-checkinstall and make those changes. Should fix it!
