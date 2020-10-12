@@ -55,9 +55,12 @@ def dynamicallyEnumPorts(portsFound, target, buff):
         os.system(cmd)
     if 22 in portsFound:
         print('\nSSH is open on port 22 so be looking for usernames and passwords.')
+    for p in portsFound:
+        if p != 80 and p != 22:
+            print('Unsupported Port Found: ' + str(p) + '\n')
 
 def addListToBuff(listOfItems, buff):
-    buff += 'Found the following ports open:\n'
+    buff += '\n\nFound the following ports open:\n'
     tempBuff = ''
     for item in listOfItems:
         tempBuff += ' ' + str(item) + ','
